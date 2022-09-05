@@ -5294,13 +5294,13 @@ react-devtools-core@4.24.0:
     shell-quote "^1.6.1"
     ws "^7"
 
-react-dom@18.2.0:
-  version "18.2.0"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-18.2.0.tgz#22aaf38708db2674ed9ada224ca4aa708d821e3d"
-  integrity sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==
+react-dom@18.0.0:
+  version "18.0.0"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-18.0.0.tgz#26b88534f8f1dbb80853e1eabe752f24100d8023"
+  integrity sha512-XqX7uzmFo0pUceWFCt7Gff6IyIMzFUn7QMZrbrQfGxtaxXZIcGQzoNpRLE3fQLnS4XzLLPMZX2T9TRcSrasicw==
   dependencies:
     loose-envify "^1.1.0"
-    scheduler "^0.23.0"
+    scheduler "^0.21.0"
 
 "react-is@^16.12.0 || ^17.0.0 || ^18.0.0":
   version "18.2.0"
@@ -5327,10 +5327,10 @@ react-native-gradle-plugin@^0.0.7:
   resolved "https://registry.yarnpkg.com/react-native-gradle-plugin/-/react-native-gradle-plugin-0.0.7.tgz#96602f909745239deab7b589443f14fce5da2056"
   integrity sha512-+4JpbIx42zGTONhBTIXSyfyHICHC29VTvhkkoUOJAh/XHPEixpuBduYgf6Y4y9wsN1ARlQhBBoptTvXvAFQf5g==
 
-react-native-safe-area-context@4.3.3:
-  version "4.3.3"
-  resolved "https://registry.yarnpkg.com/react-native-safe-area-context/-/react-native-safe-area-context-4.3.3.tgz#a0f1e3116ded39efc1b78a46a6d89c71169827e4"
-  integrity sha512-xwsloGLDUzeTN40TIh4Te/zRePSnBAuWlLIiEW3RYE9gHHYslqQWpfK7N24SdAQEH3tHZ+huoYNjo2GQJO/vnQ==
+react-native-safe-area-context@4.3.1:
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/react-native-safe-area-context/-/react-native-safe-area-context-4.3.1.tgz#5cf97b25b395e0d09bc1f828920cd7da0d792ade"
+  integrity sha512-cEr7fknJCToTrSyDCVNg0GRdRMhyLeQa2NZwVCuzEQcWedOw/59ExomjmzCE4rxrKXs6OJbyfNtFRNyewDaHuA==
 
 react-native-web@0.18.9:
   version "0.18.9"
@@ -5405,10 +5405,10 @@ react-shallow-renderer@16.15.0:
     object-assign "^4.1.1"
     react-is "^16.12.0 || ^17.0.0 || ^18.0.0"
 
-react@18.2.0:
-  version "18.2.0"
-  resolved "https://registry.yarnpkg.com/react/-/react-18.2.0.tgz#555bd98592883255fa00de14f1151a917b5d77d5"
-  integrity sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==
+react@18.0.0:
+  version "18.0.0"
+  resolved "https://registry.yarnpkg.com/react/-/react-18.0.0.tgz#b468736d1f4a5891f38585ba8e8fb29f91c3cb96"
+  integrity sha512-x+VL6wbT4JRVPm7EGxXhZ8w8LTROaxPXOqhlGyVSrv0sB1jkyFGgXxJ8LVoPRLvPR6/CIZGFmfzqUa2NYeMr2A==
   dependencies:
     loose-envify "^1.1.0"
 
@@ -5687,13 +5687,6 @@ scheduler@^0.21.0:
   version "0.21.0"
   resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.21.0.tgz#6fd2532ff5a6d877b6edb12f00d8ab7e8f308820"
   integrity sha512-1r87x5fz9MXqswA2ERLo0EbOAU74DpIUO090gIasYTqlVoJeMcl+Z1Rg7WHz+qtPujhS/hGIt9kxZOYBV3faRQ==
-  dependencies:
-    loose-envify "^1.1.0"
-
-scheduler@^0.23.0:
-  version "0.23.0"
-  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.23.0.tgz#ba8041afc3d30eb206a487b6b384002e4e61fdfe"
-  integrity sha512-CtuThmgHNg7zIZWAXi3AsyIzA3n4xx7aNyjwC2VJldO2LMVDhFK+63xGqq6CsJH4rTAt6/M+N4GhZiDYPx9eUw==
   dependencies:
     loose-envify "^1.1.0"
 
