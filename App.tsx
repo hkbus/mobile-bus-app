@@ -49,10 +49,10 @@ export default function App() {
             ref={webViewRef}
             style={styles.webview}
             source={{ uri: "https://hkbus.app/" }}
-            geolocationEnabled={true}
+            geolocationEnabled
             cacheEnabled
             cacheMode="LOAD_CACHE_ELSE_NETWORK"
-            limitsNavigationsToAppBoundDomains
+            pullToRefreshEnabled
           />
       </SafeAreaView>
     </SafeAreaProvider>
