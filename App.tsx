@@ -1,14 +1,29 @@
-import React, { useLayoutEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet } from "react-native";
+import {
+  BackHandler,
+  NativeEventSubscription,
+  Platform,
+  StyleSheet,
+} from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import * as Location from "expo-location";
 import { WebView } from "react-native-webview";
 
 export default function App() {
   const [render, setRender] = useState(false);
+  const webViewRef = useRef<WebView>(null);
+  const handlerRef = useRef<NativeEventSubscription>();
 
-  useLayoutEffect(() => {
+  const onAndroidBackPress = useCallback(() => {
+    if (webViewRef.current) {
+      webViewRef.current.goBack();
+      return true;
+    }
+    return false;
+  }, [webViewRef.current]);
+
+  useEffect(() => {
     if (Location.PermissionStatus.UNDETERMINED)
       (async () => {
         const { status } = await Location.requestForegroundPermissionsAsync();
@@ -16,15 +31,29 @@ export default function App() {
       })();
   }, []);
 
+  useEffect(() => {
+    if (Platform.OS === "android") {
+      handlerRef.current?.remove();
+      handlerRef.current = BackHandler.addEventListener(
+        "hardwareBackPress",
+        onAndroidBackPress
+      );
+    }
+  }, [onAndroidBackPress]);
+
   return (
     <SafeAreaProvider>
       <StatusBar style="light" />
       <SafeAreaView style={styles.container}>
-        <WebView
-          style={styles.webview}
-          source={{ uri: "https://hkbus.app/" }}
-          geolocationEnabled={true}
-        />
+          <WebView
+            ref={webViewRef}
+            style={styles.webview}
+            source={{ uri: "https://hkbus.app/" }}
+            geolocationEnabled={true}
+            cacheEnabled
+            cacheMode="LOAD_CACHE_ELSE_NETWORK"
+            limitsNavigationsToAppBoundDomains
+          />
       </SafeAreaView>
     </SafeAreaProvider>
   );
@@ -40,5 +69,9 @@ const styles = StyleSheet.create({
   webview: {
     width: "100%",
     height: "100%",
+  },
+  ScrollStyle: {
+    backgroundColor: "white",
+    position: "relative",
   },
 });
