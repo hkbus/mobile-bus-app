@@ -2,7 +2,7 @@
   "expo": {
     "name": "巴士到站預報 - hkbus.app",
     "slug": "hkbus",
-    "version": "1.1.0",
+    "version": "1.1.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -26,7 +26,7 @@
         "backgroundColor": "#000000"
       },
       "package": "app.hkbus",
-      "versionCode": 2
+      "versionCode": 4
     },
     "web": {
       "favicon": "./assets/favicon.png"
