@@ -41,6 +41,11 @@ export default function App() {
     }
   }, [onAndroidBackPress]);
 
+  const runFirst = `
+    window.iOSRNWebView = ${Platform.OS === 'ios'}; 
+    true; // note: this is required, or you'll sometimes get silent failures
+  `;
+
   return (
     <SafeAreaProvider>
       <StatusBar style="light" />
@@ -53,6 +58,8 @@ export default function App() {
             cacheEnabled
             cacheMode="LOAD_CACHE_ELSE_NETWORK"
             pullToRefreshEnabled
+            onMessage={() => {}}
+            injectedJavaScript={runFirst}
           />
       </SafeAreaView>
     </SafeAreaProvider>
