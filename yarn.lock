@@ -3040,6 +3040,13 @@ expo-status-bar@~1.4.0:
   resolved "https://registry.yarnpkg.com/expo-status-bar/-/expo-status-bar-1.4.0.tgz#c0317de2c53878340f4b4f00ff7e4ba14399a7fb"
   integrity sha512-vh98g8qMIjig/2XTBsoAWS6Vo2dIIwDWjB3/GiuZ9Lazpxc9GO/APfJ4dar7MibzIDUKIrjotrcL6rLdPH13Ew==
 
+expo-tracking-transparency@^2.3.1:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/expo-tracking-transparency/-/expo-tracking-transparency-2.3.1.tgz#c48b640673f9b53a3ffa20d96ed3b53e6fdc9f66"
+  integrity sha512-NmJRSAnpjaig8ThehyKvqRPOPQnqfsKbk+SVXdd7ZuPIdIepE/9KlEjmRnoFMpdhtxgYG4Mfb+qUQDUlk8JzpA==
+  dependencies:
+    "@expo/config-plugins" "~5.0.0"
+
 expo@~46.0.9:
   version "46.0.9"
   resolved "https://registry.yarnpkg.com/expo/-/expo-46.0.9.tgz#4b4b943343c45c3a05c71da49c1cfd5555ab5f85"

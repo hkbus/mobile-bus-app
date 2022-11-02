@@ -9,9 +9,11 @@ import {
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import * as Location from "expo-location";
 import { WebView } from "react-native-webview";
+import { requestTrackingPermissionsAsync } from "expo-tracking-transparency";
 
 export default function App() {
   const [render, setRender] = useState(false);
+  const [iOSTracking, setIOSTracking] = useState(false);
   const webViewRef = useRef<WebView>(null);
   const handlerRef = useRef<NativeEventSubscription>();
 
@@ -32,6 +34,18 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    if (Platform.OS === "ios") {
+      (async () => {
+        const { status } = await requestTrackingPermissionsAsync();
+        if (status === "granted") {
+          console.log("Tracking granted!");
+          setIOSTracking(true);
+        }
+      })();
+    }
+  });
+
+  useEffect(() => {
     if (Platform.OS === "android") {
       handlerRef.current?.remove();
       handlerRef.current = BackHandler.addEventListener(
@@ -42,7 +56,8 @@ export default function App() {
   }, [onAndroidBackPress]);
 
   const runFirst = `
-    window.iOSRNWebView = ${Platform.OS === 'ios'}; 
+    window.iOSRNWebView = ${Platform.OS === "ios"};
+    ${Platform.OS === "ios" ? `window.iOSTracking = ${iOSTracking}` : ""}
     true; // note: this is required, or you'll sometimes get silent failures
   `;
 
@@ -50,17 +65,17 @@ export default function App() {
     <SafeAreaProvider>
       <StatusBar style="light" />
       <SafeAreaView style={styles.container}>
-          <WebView
-            ref={webViewRef}
-            style={styles.webview}
-            source={{ uri: "https://hkbus.app/" }}
-            geolocationEnabled
-            cacheEnabled
-            cacheMode="LOAD_CACHE_ELSE_NETWORK"
-            pullToRefreshEnabled
-            onMessage={() => {}}
-            injectedJavaScript={runFirst}
-          />
+        <WebView
+          ref={webViewRef}
+          style={styles.webview}
+          source={{ uri: "https://hkbus.app/" }}
+          geolocationEnabled
+          cacheEnabled
+          cacheMode="LOAD_CACHE_ELSE_NETWORK"
+          pullToRefreshEnabled
+          onMessage={() => {}}
+          injectedJavaScript={runFirst}
+        />
       </SafeAreaView>
     </SafeAreaProvider>
   );
