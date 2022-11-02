@@ -3,6 +3,7 @@ import { StatusBar } from "expo-status-bar";
 import {
   BackHandler,
   NativeEventSubscription,
+  Linking,
   Platform,
   StyleSheet,
 } from "react-native";
@@ -61,21 +62,30 @@ export default function App() {
     true; // note: this is required, or you'll sometimes get silent failures
   `;
 
+  const uri = 'https://hkbus.app/'
+
   return (
     <SafeAreaProvider>
       <StatusBar style="light" />
       <SafeAreaView style={styles.container}>
-        <WebView
-          ref={webViewRef}
-          style={styles.webview}
-          source={{ uri: "https://hkbus.app/" }}
-          geolocationEnabled
-          cacheEnabled
-          cacheMode="LOAD_CACHE_ELSE_NETWORK"
-          pullToRefreshEnabled
-          onMessage={() => {}}
-          injectedJavaScript={runFirst}
-        />
+          <WebView
+            ref={webViewRef}
+            style={styles.webview}
+            source={{ uri }}
+            geolocationEnabled
+            cacheEnabled
+            cacheMode="LOAD_CACHE_ELSE_NETWORK"
+            pullToRefreshEnabled
+            onMessage={() => {}}
+            injectedJavaScriptBeforeContentLoaded={runFirst}
+            onShouldStartLoadWithRequest={request => {
+              if ( !request.url.startsWith(uri) ) {
+                Linking.openURL(request.url);
+                return false
+              }
+              return true
+            }}
+          />
       </SafeAreaView>
     </SafeAreaProvider>
   );

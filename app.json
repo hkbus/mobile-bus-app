@@ -2,7 +2,7 @@
   "expo": {
     "name": "巴士到站預報 - hkbus.app",
     "slug": "hkbus",
-    "version": "1.1.2",
+    "version": "1.2.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -26,7 +26,10 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "app.hkbus"
+      "bundleIdentifier": "app.hkbus",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Your location will be used to determine the nearby bus stops"
+      }
     },
     "android": {
       "adaptiveIcon": {
