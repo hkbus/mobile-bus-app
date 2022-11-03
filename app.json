@@ -2,7 +2,7 @@
   "expo": {
     "name": "巴士到站預報 - hkbus.app",
     "slug": "hkbus",
-    "version": "1.2.1",
+    "version": "1.2.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -20,7 +20,7 @@
       [
         "expo-tracking-transparency",
         {
-          "userTrackingPermission": "This identifier will be used to deliver personalized ads to you."
+          "userTrackingPermission": "This identifier will be used to count the number of active users."
         }
       ]
     ],

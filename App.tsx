@@ -14,7 +14,7 @@ import { requestTrackingPermissionsAsync } from "expo-tracking-transparency";
 
 export default function App() {
   const [render, setRender] = useState(false);
-  const [iOSTracking, setIOSTracking] = useState(false);
+  const [iOSTracking, setIOSTracking] = useState<boolean | undefined>(undefined);
   const webViewRef = useRef<WebView>(null);
   const handlerRef = useRef<NativeEventSubscription>();
 
@@ -39,8 +39,9 @@ export default function App() {
       (async () => {
         const { status } = await requestTrackingPermissionsAsync();
         if (status === "granted") {
-          console.log("Tracking granted!");
           setIOSTracking(true);
+        } else {
+          setIOSTracking(false);
         }
       })();
     }
@@ -63,6 +64,10 @@ export default function App() {
   `;
 
   const uri = 'https://hkbus.app/'
+
+  if ( iOSTracking === undefined ) {
+    return <></>
+  }
 
   return (
     <SafeAreaProvider>
