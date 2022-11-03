@@ -10,9 +10,11 @@ import {
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import * as Location from "expo-location";
 import { WebView } from "react-native-webview";
+import { requestTrackingPermissionsAsync } from "expo-tracking-transparency";
 
 export default function App() {
   const [render, setRender] = useState(false);
+  const [iOSTracking, setIOSTracking] = useState(false);
   const webViewRef = useRef<WebView>(null);
   const handlerRef = useRef<NativeEventSubscription>();
 
@@ -33,6 +35,18 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    if (Platform.OS === "ios") {
+      (async () => {
+        const { status } = await requestTrackingPermissionsAsync();
+        if (status === "granted") {
+          console.log("Tracking granted!");
+          setIOSTracking(true);
+        }
+      })();
+    }
+  });
+
+  useEffect(() => {
     if (Platform.OS === "android") {
       handlerRef.current?.remove();
       handlerRef.current = BackHandler.addEventListener(
@@ -43,7 +57,8 @@ export default function App() {
   }, [onAndroidBackPress]);
 
   const runFirst = `
-    window.iOSRNWebView = ${Platform.OS === 'ios'}; 
+    window.iOSRNWebView = ${Platform.OS === "ios"};
+    ${Platform.OS === "ios" ? `window.iOSTracking = ${iOSTracking}` : ""}
     true; // note: this is required, or you'll sometimes get silent failures
   `;
 
