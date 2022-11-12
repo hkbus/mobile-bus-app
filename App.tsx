@@ -12,9 +12,16 @@ import * as Location from "expo-location";
 import { WebView } from "react-native-webview";
 import { requestTrackingPermissionsAsync } from "expo-tracking-transparency";
 
+interface AppState {
+  render: boolean;
+  iOSTracking: boolean | undefined;
+}
+
 export default function App() {
-  const [render, setRender] = useState(false);
-  const [iOSTracking, setIOSTracking] = useState<boolean | undefined>(undefined);
+  const [state, setState] = useState<AppState>({
+    render: false,
+    iOSTracking: undefined,
+  });
   const webViewRef = useRef<WebView>(null);
   const handlerRef = useRef<NativeEventSubscription>();
 
@@ -27,25 +34,34 @@ export default function App() {
   }, [webViewRef.current]);
 
   useEffect(() => {
-    if (Location.PermissionStatus.UNDETERMINED)
-      (async () => {
-        const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status === "granted") setRender(!render);
-      })();
-  }, []);
+    (async () => {
+      const _state: AppState = {
+        render: false,
+        iOSTracking: undefined,
+      };
 
-  useEffect(() => {
-    if (Platform.OS === "ios") {
-      (async () => {
+      if (Platform.OS === "ios") {
         const { status } = await requestTrackingPermissionsAsync();
         if (status === "granted") {
-          setIOSTracking(true);
+          _state.iOSTracking = true;
         } else {
-          setIOSTracking(false);
+          _state.iOSTracking = false;
         }
-      })();
-    }
-  });
+      }
+
+      if (Location.PermissionStatus.UNDETERMINED) {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status === "granted") _state.render = true;
+      }
+
+      if (
+        _state.render !== state.render ||
+        _state.iOSTracking !== state.iOSTracking
+      ) {
+        setState(_state);
+      }
+    })();
+  }, [state, setState]);
 
   useEffect(() => {
     if (Platform.OS === "android") {
@@ -59,38 +75,38 @@ export default function App() {
 
   const runFirst = `
     window.iOSRNWebView = ${Platform.OS === "ios"};
-    ${Platform.OS === "ios" ? `window.iOSTracking = ${iOSTracking}` : ""}
+    ${Platform.OS === "ios" ? `window.iOSTracking = ${state.iOSTracking}` : ""}
     true; // note: this is required, or you'll sometimes get silent failures
   `;
 
-  const uri = 'https://hkbus.app/'
+  const uri = "https://hkbus.app/";
 
-  if ( iOSTracking === undefined ) {
-    return <></>
+  if (state.iOSTracking === undefined) {
+    return <></>;
   }
 
   return (
     <SafeAreaProvider>
       <StatusBar style="light" />
       <SafeAreaView style={styles.container}>
-          <WebView
-            ref={webViewRef}
-            style={styles.webview}
-            source={{ uri }}
-            geolocationEnabled
-            cacheEnabled
-            cacheMode="LOAD_CACHE_ELSE_NETWORK"
-            pullToRefreshEnabled
-            onMessage={() => {}}
-            injectedJavaScriptBeforeContentLoaded={runFirst}
-            onShouldStartLoadWithRequest={request => {
-              if ( !request.url.startsWith(uri) ) {
-                Linking.openURL(request.url);
-                return false
-              }
-              return true
-            }}
-          />
+        <WebView
+          ref={webViewRef}
+          style={styles.webview}
+          source={{ uri }}
+          geolocationEnabled
+          cacheEnabled
+          cacheMode="LOAD_CACHE_ELSE_NETWORK"
+          pullToRefreshEnabled
+          onMessage={() => {}}
+          injectedJavaScriptBeforeContentLoaded={runFirst}
+          onShouldStartLoadWithRequest={(request) => {
+            if (!request.url.startsWith(uri)) {
+              Linking.openURL(request.url);
+              return false;
+            }
+            return true;
+          }}
+        />
       </SafeAreaView>
     </SafeAreaProvider>
   );
