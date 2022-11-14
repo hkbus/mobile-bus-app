@@ -81,7 +81,7 @@ export default function App() {
 
   const uri = "https://hkbus.app/";
 
-  if (state.iOSTracking === undefined) {
+  if (Platform.OS === 'ios' && state.iOSTracking === undefined) {
     return <></>;
   }
 
