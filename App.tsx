@@ -23,11 +23,6 @@ import {
   useTrackingPermissions,
 } from "expo-tracking-transparency";
 
-interface AppState {
-  render: boolean;
-  iOSTracking: boolean;
-}
-
 export default function App() {
   const [locationPermission] = useForegroundPermissions({
     get: true,
