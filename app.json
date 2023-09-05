@@ -2,7 +2,7 @@
   "expo": {
     "name": "巴士到站預報 - hkbus.app",
     "slug": "hkbus",
-    "version": "2.1.2",
+    "version": "2.2.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -31,7 +31,7 @@
         "NSLocationWhenInUseUsageDescription": "Your location will be used to determine the nearby bus stops"
       },
       "appStoreUrl": "https://apps.apple.com/hk/app/%E5%B7%B4%E5%A3%AB%E5%88%B0%E7%AB%99%E9%A0%90%E5%A0%B1-hkbus-app/id1612184906",
-      "buildNumber": "2.0"
+      "buildNumber": "3.0"
     },
     "android": {
       "adaptiveIcon": {
@@ -39,7 +39,7 @@
         "backgroundColor": "#000000"
       },
       "package": "app.hkbus",
-      "versionCode": 5
+      "versionCode": 6
     },
     "web": {
       "favicon": "./assets/favicon.png"
