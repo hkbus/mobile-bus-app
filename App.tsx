@@ -18,17 +18,10 @@ import {
   useForegroundPermissions,
 } from "expo-location";
 import { WebView } from "react-native-webview";
-import {
-  PermissionStatus as TrackingPermissionStatus,
-  useTrackingPermissions,
-} from "expo-tracking-transparency";
 
 export default function App() {
+
   const [locationPermission] = useForegroundPermissions({
-    get: true,
-    request: true,
-  });
-  const [trackingPermission] = useTrackingPermissions({
     get: true,
     request: true,
   });
@@ -57,16 +50,9 @@ export default function App() {
   const runFirst = useMemo(
     () => `
     window.iOSRNWebView = ${Platform.OS === "ios"};
-    ${
-      Platform.OS === "ios"
-        ? `window.iOSTracking = ${
-            trackingPermission?.status === TrackingPermissionStatus.GRANTED
-          }`
-        : ""
-    }
     true; // note: this is required, or you'll sometimes get silent failures
   `,
-    [trackingPermission]
+    []
   );
 
   const uri = "https://hkbus.app/";
