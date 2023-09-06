@@ -6,11 +6,13 @@ import React, {
 } from "react";
 import { StatusBar } from "expo-status-bar";
 import {
+  AppState,
   BackHandler,
   NativeEventSubscription,
   Linking,
   Platform,
   StyleSheet,
+  ImageBackground,
 } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import {
@@ -18,12 +20,22 @@ import {
   useForegroundPermissions,
 } from "expo-location";
 import { WebView } from "react-native-webview";
+import {
+  PermissionStatus as TrackingPermissionStatus,
+  useTrackingPermissions,
+  requestTrackingPermissionsAsync,
+} from "expo-tracking-transparency";
 
 export default function App() {
 
   const [locationPermission] = useForegroundPermissions({
     get: true,
     request: true,
+  });
+
+  const [trackingPermission] = useTrackingPermissions({
+    get: true,
+    request: false,
   });
 
   const webViewRef = useRef<WebView>(null);
@@ -47,13 +59,55 @@ export default function App() {
     }
   }, [onAndroidBackPress]);
 
+  const readyToLoad = useMemo<boolean>(() => {
+    if ( locationPermission === null || locationPermission.status === undefined || locationPermission.status === LocationPermissionStatus.UNDETERMINED ) {
+      return false
+    }
+    return true;
+  }, [locationPermission, locationPermission?.status])
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      if ( Platform.OS !== 'ios' ) return;
+      if ( nextAppState === 'active' && (
+        trackingPermission === null || trackingPermission?.status === undefined ||
+        trackingPermission?.status === TrackingPermissionStatus.UNDETERMINED )
+      ) {
+        requestTrackingPermissionsAsync()
+      }
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+  
   const runFirst = useMemo(
     () => `
     window.iOSRNWebView = ${Platform.OS === "ios"};
+    ${
+      Platform.OS === "ios"
+        ? `window.iOSTracking = ${
+            trackingPermission?.status === TrackingPermissionStatus.GRANTED
+          }`
+        : ""
+    }
     true; // note: this is required, or you'll sometimes get silent failures
   `,
-    []
+    [trackingPermission]
   );
+
+  if ( !readyToLoad ) {
+    return (
+      <ImageBackground
+        source={require('./assets/splash.png')}
+        style={{
+          width: "100%",
+          height: "100%",
+        }}
+      />
+    )
+  }
 
   const uri = "https://hkbus.app/";
 
@@ -65,9 +119,7 @@ export default function App() {
           ref={webViewRef}
           style={styles.webview}
           source={{ uri }}
-          geolocationEnabled={
-            locationPermission?.status === LocationPermissionStatus.GRANTED
-          }
+          geolocationEnabled={trackingPermission?.status === TrackingPermissionStatus.GRANTED}
           cacheEnabled
           cacheMode="LOAD_CACHE_ELSE_NETWORK"
           pullToRefreshEnabled

@@ -2,7 +2,7 @@
   "expo": {
     "name": "巴士到站預報 - hkbus.app",
     "slug": "hkbus",
-    "version": "2.2.0",
+    "version": "2.2.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -16,7 +16,14 @@
     "assetBundlePatterns": [
       "**/*"
     ],
-    "plugins": [],
+    "plugins": [
+      [
+        "expo-tracking-transparency",
+        {
+          "userTrackingPermission": "This identifier will be used to count the number of active users."
+        }
+      ]
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "app.hkbus",
