@@ -112,8 +112,9 @@ export default function App() {
   const uri = "https://hkbus.app/";
 
   return (
+    <>
+    <StatusBar style="light" />
     <SafeAreaProvider>
-      <StatusBar style="light" />
       <SafeAreaView style={styles.container}>
         <WebView
           ref={webViewRef}
@@ -135,6 +136,7 @@ export default function App() {
         />
       </SafeAreaView>
     </SafeAreaProvider>
+    </>
   );
 }
 
