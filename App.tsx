@@ -97,6 +97,10 @@ export default function App() {
     [trackingPermission]
   );
 
+  const handleContentTerminate = useCallback(() => {
+    webViewRef.current?.reload()
+  }, [])
+
   if ( !readyToLoad ) {
     return (
       <ImageBackground
@@ -133,6 +137,7 @@ export default function App() {
             }
             return true;
           }}
+          onContentProcessDidTerminate={handleContentTerminate}
         />
       </SafeAreaView>
     </SafeAreaProvider>
