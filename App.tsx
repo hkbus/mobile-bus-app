@@ -3,6 +3,7 @@ import React, {
   useEffect,
   useMemo,
   useRef,
+  useState,
 } from "react";
 import { StatusBar } from "expo-status-bar";
 import {
@@ -18,6 +19,7 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import {
   PermissionStatus as LocationPermissionStatus,
   useForegroundPermissions,
+  watchHeadingAsync,
 } from "expo-location";
 import { WebView } from "react-native-webview";
 import {
@@ -38,6 +40,8 @@ export default function App() {
     request: false,
   });
 
+  const [heading, setHeading] = useState<{degree: number, accuracy: number} | null>(null)
+
   const webViewRef = useRef<WebView>(null);
   const handlerRef = useRef<NativeEventSubscription>();
 
@@ -50,6 +54,10 @@ export default function App() {
   }, [webViewRef.current]);
 
   useEffect(() => {
+    webViewRef?.current?.postMessage(JSON.stringify({...heading, type: "compass"}))
+  }, [heading])
+
+  useEffect(() => {
     if (Platform.OS === "android") {
       handlerRef.current?.remove();
       handlerRef.current = BackHandler.addEventListener(
@@ -58,6 +66,20 @@ export default function App() {
       );
     }
   }, [onAndroidBackPress]);
+
+
+
+  useEffect(() => {
+    let subscription = {remove: () => {}}
+    if ( locationPermission?.status === LocationPermissionStatus.GRANTED ) {
+      watchHeadingAsync(({accuracy, trueHeading}) => {
+        setHeading({accuracy, degree: 360 - trueHeading})
+      }).then(s => subscription)
+    }
+    return () => {
+      subscription.remove()
+    }
+  }, [locationPermission?.status])
 
   const readyToLoad = useMemo<boolean>(() => {
     if ( locationPermission === null || locationPermission.status === undefined || locationPermission.status === LocationPermissionStatus.UNDETERMINED ) {
@@ -89,7 +111,7 @@ export default function App() {
       Platform.OS === "ios"
         ? `window.iOSTracking = ${
             trackingPermission?.status === TrackingPermissionStatus.GRANTED
-          }`
+          };`
         : ""
     }
     true; // note: this is required, or you'll sometimes get silent failures
@@ -138,6 +160,7 @@ export default function App() {
             return true;
           }}
           onContentProcessDidTerminate={handleContentTerminate}
+          bounces={false}
         />
       </SafeAreaView>
     </SafeAreaProvider>
