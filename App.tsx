@@ -43,7 +43,7 @@ export default function App() {
     request: false,
   });
 
-  const [geolocationStatus, setGeolocationStatus] = useState<"start" | "closed">("start")
+  const [geolocationStatus, setGeolocationStatus] = useState<"granted" | "closed" | null>(null)
 
   const webViewRef = useRef<WebView>(null);
   const handlerRef = useRef<NativeEventSubscription>();
@@ -69,7 +69,7 @@ export default function App() {
   useEffect(() => {
     let headingSubscription = {remove: () => {}}
     let positionSubscription = {remove: () => {}}
-    if ( locationPermission?.status === LocationPermissionStatus.GRANTED && geolocationStatus === 'start' ) {
+    if ( locationPermission?.status === LocationPermissionStatus.GRANTED && geolocationStatus === 'granted' ) {
       watchHeadingAsync(({accuracy, trueHeading}) => {
         webViewRef?.current?.postMessage(JSON.stringify({accuracy, degree: 360 - trueHeading, type: "compass"}))
       }).then(s => headingSubscription = s)
@@ -90,11 +90,7 @@ export default function App() {
       if ( message.type === "start-geolocation" ) {
         requestForegroundPermissionsAsync()
           .then(({status}) => {
-            setGeolocationStatus(status === 'granted' ? "start" : "closed")
-            webViewRef?.current?.postMessage(JSON.stringify({
-              type: 'geoPermission',
-              value: status,
-            }))
+            setGeolocationStatus(status === 'granted' ? "granted" : "closed")
           })
       } else if ( message.type === 'stop-geolocation' ) {
         setGeolocationStatus("closed")
@@ -126,6 +122,13 @@ export default function App() {
       subscription.remove();
     };
   }, []);
+
+  useEffect(() => {
+    webViewRef?.current?.postMessage(JSON.stringify({
+      type: 'geoPermission',
+      value: geolocationStatus,
+    }))
+  }, [geolocationStatus])
   
   const runFirst = useMemo(
     () => `
