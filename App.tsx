@@ -17,9 +17,12 @@ import {
 } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import {
+  Accuracy,
   PermissionStatus as LocationPermissionStatus,
+  requestForegroundPermissionsAsync,
   useForegroundPermissions,
   watchHeadingAsync,
+  watchPositionAsync,
 } from "expo-location";
 import { WebView } from "react-native-webview";
 import {
@@ -40,7 +43,7 @@ export default function App() {
     request: false,
   });
 
-  const [heading, setHeading] = useState<{degree: number, accuracy: number} | null>(null)
+  const [geolocationStatus, setGeolocationStatus] = useState<"start" | "closed">("start")
 
   const webViewRef = useRef<WebView>(null);
   const handlerRef = useRef<NativeEventSubscription>();
@@ -54,10 +57,6 @@ export default function App() {
   }, [webViewRef.current]);
 
   useEffect(() => {
-    webViewRef?.current?.postMessage(JSON.stringify({...heading, type: "compass"}))
-  }, [heading])
-
-  useEffect(() => {
     if (Platform.OS === "android") {
       handlerRef.current?.remove();
       handlerRef.current = BackHandler.addEventListener(
@@ -67,19 +66,43 @@ export default function App() {
     }
   }, [onAndroidBackPress]);
 
-
-
   useEffect(() => {
-    let subscription = {remove: () => {}}
-    if ( locationPermission?.status === LocationPermissionStatus.GRANTED ) {
+    let headingSubscription = {remove: () => {}}
+    let positionSubscription = {remove: () => {}}
+    if ( locationPermission?.status === LocationPermissionStatus.GRANTED && geolocationStatus === 'start' ) {
       watchHeadingAsync(({accuracy, trueHeading}) => {
-        setHeading({accuracy, degree: 360 - trueHeading})
-      }).then(s => subscription)
+        webViewRef?.current?.postMessage(JSON.stringify({accuracy, degree: 360 - trueHeading, type: "compass"}))
+      }).then(s => headingSubscription = s)
+      watchPositionAsync({accuracy: Accuracy.BestForNavigation, }, ({coords: { latitude, longitude }}) => {
+        webViewRef?.current?.postMessage(JSON.stringify({lat: latitude, lng: longitude, type: "location"}))
+      }).then(s => positionSubscription = s)
     }
     return () => {
-      subscription.remove()
+      headingSubscription.remove()
+      positionSubscription.remove()
     }
-  }, [locationPermission?.status])
+  }, [locationPermission?.status, geolocationStatus])
+
+  const handleOnMessage = useCallback((e: any) => {
+    try {
+      const {nativeEvent: { data }} = e
+      const message = JSON.parse(data) as any
+      if ( message.type === "start-geolocation" ) {
+        requestForegroundPermissionsAsync()
+          .then(({status}) => {
+            setGeolocationStatus(status === 'granted' ? "start" : "closed")
+            webViewRef?.current?.postMessage(JSON.stringify({
+              type: 'geoPermission',
+              value: status,
+            }))
+          })
+      } else if ( message.type === 'stop-geolocation' ) {
+        setGeolocationStatus("closed")
+      }
+    } catch ( err ) {
+      console.log("UNKNOWN message:", e)
+    }
+  }, [])
 
   const readyToLoad = useMemo<boolean>(() => {
     if ( locationPermission === null || locationPermission.status === undefined || locationPermission.status === LocationPermissionStatus.UNDETERMINED ) {
@@ -106,6 +129,7 @@ export default function App() {
   
   const runFirst = useMemo(
     () => `
+    window.RnOs = "${Platform.OS}";
     window.iOSRNWebView = ${Platform.OS === "ios"};
     ${
       Platform.OS === "ios"
@@ -146,11 +170,10 @@ export default function App() {
           ref={webViewRef}
           style={styles.webview}
           source={{ uri }}
-          geolocationEnabled={trackingPermission?.status === TrackingPermissionStatus.GRANTED}
           cacheEnabled
           cacheMode="LOAD_CACHE_ELSE_NETWORK"
           pullToRefreshEnabled
-          onMessage={() => {}}
+          onMessage={handleOnMessage}
           injectedJavaScriptBeforeContentLoaded={runFirst}
           onShouldStartLoadWithRequest={(request) => {
             if (!request.url.startsWith(uri)) {
