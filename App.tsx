@@ -88,10 +88,14 @@ export default function App() {
       const {nativeEvent: { data }} = e
       const message = JSON.parse(data) as any
       if ( message.type === "start-geolocation" ) {
-        requestForegroundPermissionsAsync()
-          .then(({status}) => {
-            setGeolocationStatus(status === 'granted' ? "granted" : "closed")
-          })
+        if ( locationPermission?.granted ) {
+          setGeolocationStatus("granted")
+        } else {
+          requestForegroundPermissionsAsync()
+            .then(({status}) => {
+              setGeolocationStatus(status === 'granted' ? "granted" : "closed")
+            })
+          }
       } else if ( message.type === 'stop-geolocation' ) {
         setGeolocationStatus("closed")
       }
