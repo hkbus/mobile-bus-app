@@ -14,6 +14,7 @@ import {
   Platform,
   StyleSheet,
   ImageBackground,
+  Share,
 } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import {
@@ -98,6 +99,15 @@ export default function App() {
           }
       } else if ( message.type === 'stop-geolocation' ) {
         setGeolocationStatus("closed")
+      } else if ( message.type === 'share' ) {
+        Share.share({
+          title: message?.value?.title ?? "",
+          message: [message?.value?.text, message?.value?.url].filter(Boolean).join(' '),
+          url: message?.value?.url,
+        }, {
+          dialogTitle: message?.value?.title,
+          subject: message?.value?.title,
+        })
       }
     } catch ( err ) {
       console.log("UNKNOWN message:", e)
@@ -145,6 +155,11 @@ export default function App() {
           };`
         : ""
     }
+    if (navigator.share == null) {
+      navigator.share = (param) => {
+         window.ReactNativeWebView.postMessage(JSON.stringify({type: 'share', value: param}));
+      };
+    };
     true; // note: this is required, or you'll sometimes get silent failures
   `,
     [trackingPermission]
