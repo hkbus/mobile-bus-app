@@ -47,7 +47,7 @@ export default function App() {
   const [geolocationStatus, setGeolocationStatus] = useState<"granted" | "closed" | null>(null)
 
   const webViewRef = useRef<WebView>(null);
-  const handlerRef = useRef<NativeEventSubscription>(null);
+  const handlerRef = useRef<NativeEventSubscription>();
 
   const onAndroidBackPress = useCallback(() => {
     if (webViewRef.current) {
