@@ -15,6 +15,8 @@ import {
   StyleSheet,
   ImageBackground,
   Share,
+  ScrollView,
+  RefreshControl,
 } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import {
@@ -46,8 +48,18 @@ export default function App() {
 
   const [geolocationStatus, setGeolocationStatus] = useState<"granted" | "closed" | null>(null)
 
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    webViewRef.current?.reload()
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
+
   const webViewRef = useRef<WebView>(null);
-  const handlerRef = useRef<NativeEventSubscription>(null);
+  const handlerRef = useRef<NativeEventSubscription>();
 
   const onAndroidBackPress = useCallback(() => {
     if (webViewRef.current) {
@@ -188,6 +200,11 @@ export default function App() {
     <StatusBar style="light" />
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
+      <ScrollView
+        contentContainerStyle={styles.container}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
         <WebView
           ref={webViewRef}
           style={styles.webview}
@@ -207,6 +224,7 @@ export default function App() {
           onContentProcessDidTerminate={handleContentTerminate}
           bounces={false}
         />
+        </ScrollView>
       </SafeAreaView>
     </SafeAreaProvider>
     </>
