@@ -1,3 +1,4 @@
+import 'react-native-url-polyfill/auto';
 import React, {
   useCallback,
   useEffect,
@@ -15,6 +16,7 @@ import {
   StyleSheet,
   ImageBackground,
   Share,
+  ToastAndroid,
 } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import {
@@ -26,6 +28,7 @@ import {
   watchPositionAsync,
 } from "expo-location";
 import { WebView } from "react-native-webview";
+import type { WebViewNavigation } from "react-native-webview";
 import {
   PermissionStatus as TrackingPermissionStatus,
   useTrackingPermissions,
@@ -46,17 +49,40 @@ export default function App() {
 
   const [geolocationStatus, setGeolocationStatus] = useState<"granted" | "closed" | null>(null)
 
+  const [webViewUrlState, setWebViewUrl] = useState<string>("");
+  const [readyToExitState, setReadyToExit] = useState(false);
+
   const webViewRef = useRef<WebView>(null);
   const handlerRef = useRef<NativeEventSubscription>(null);
 
   const onAndroidBackPress = useCallback(() => {
     if (webViewRef.current) {
+      const url = new URL(webViewUrlState);
+      if (url.pathname === "/" || url.pathname === "/zh" || url.pathname === "/en") {
+        // Pressing back on the home page, trying to close the app
+        if (readyToExitState) {
+          // Back already pressed recently, exiting
+          BackHandler.exitApp();
+        } else {
+          // Back pressed for the first time, show confirmation
+          ToastAndroid.show("Press back again to exit", ToastAndroid.SHORT);
+          setReadyToExit(true);
+          // Allow 5 seconds for the user to press back again
+          setTimeout(() => {
+            setReadyToExit(false);
+          }, 5000);
+        }
+        return true;
+      } else {
+        // Not on the home page, go back
       webViewRef.current.goBack();
+      }
       return true;
     }
     return false;
-  }, [webViewRef.current]);
+  }, [webViewRef.current, webViewUrlState, readyToExitState]);
 
+  // Handle Back press behaviour 
   useEffect(() => {
     if (Platform.OS === "android") {
       handlerRef.current?.remove();
@@ -66,6 +92,10 @@ export default function App() {
       );
     }
   }, [onAndroidBackPress]);
+
+  const handleWebViewNavigationStateChange = (newNavState: WebViewNavigation) => {
+    setWebViewUrl(newNavState.url);
+  };
 
   useEffect(() => {
     let headingSubscription = {remove: () => {}}
@@ -206,6 +236,7 @@ export default function App() {
           }}
           onContentProcessDidTerminate={handleContentTerminate}
           bounces={false}
+          onNavigationStateChange={handleWebViewNavigationStateChange}
         />
       </SafeAreaView>
     </SafeAreaProvider>
