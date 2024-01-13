@@ -35,6 +35,7 @@ import {
   useTrackingPermissions,
   requestTrackingPermissionsAsync,
 } from "expo-tracking-transparency";
+import { postAlarmToWebView, toggleAlarm } from "./stopAlarm";
 
 export default function App() {
   const [locationPermission] = useForegroundPermissions({
@@ -166,6 +167,11 @@ export default function App() {
             subject: message?.value?.title,
           }
         );
+      } else if (message.type === "stop-alarm") {
+        toggleAlarm(message.value)
+          .then(() => 
+            postAlarmToWebView(webViewRef)
+          );
       }
     } catch (err) {
       console.log("UNKNOWN message:", e);
@@ -208,6 +214,7 @@ export default function App() {
         value: geolocationStatus,
       })
     );
+    postAlarmToWebView(webViewRef);
   }, [geolocationStatus]);
 
   const runFirst = useMemo(
@@ -273,10 +280,7 @@ export default function App() {
             onContentProcessDidTerminate={handleContentTerminate}
             bounces={false}
             onNavigationStateChange={handleWebViewNavigationStateChange}
-            onLoadStart={() => console.log('hihi')}
-            renderLoading={() => (
-              <View style={styles.loadingView} />
-            )}
+            renderLoading={() => <View style={styles.loadingView} />}
             startInLoadingState={true}
           />
         </SafeAreaView>
@@ -304,5 +308,5 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
     width: "100%",
     height: "100%",
-  }
+  },
 });
