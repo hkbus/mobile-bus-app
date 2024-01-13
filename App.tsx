@@ -17,6 +17,7 @@ import {
   ImageBackground,
   Share,
   ToastAndroid,
+  View,
 } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import {
@@ -272,6 +273,11 @@ export default function App() {
             onContentProcessDidTerminate={handleContentTerminate}
             bounces={false}
             onNavigationStateChange={handleWebViewNavigationStateChange}
+            onLoadStart={() => console.log('hihi')}
+            renderLoading={() => (
+              <View style={styles.loadingView} />
+            )}
+            startInLoadingState={true}
           />
         </SafeAreaView>
       </SafeAreaProvider>
@@ -294,4 +300,9 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     position: "relative",
   },
+  loadingView: {
+    backgroundColor: "black",
+    width: "100%",
+    height: "100%",
+  }
 });
