@@ -4,13 +4,13 @@ import throttle from "lodash.throttle";
 import WebView from "react-native-webview";
 import {
   Accuracy,
-  requestForegroundPermissionsAsync,
   requestBackgroundPermissionsAsync,
-  getForegroundPermissionsAsync,
   getBackgroundPermissionsAsync,
   startLocationUpdatesAsync,
   stopLocationUpdatesAsync,
 } from "expo-location";
+import { Platform } from "react-native";
+import { AsyncAlert } from "./asyncAlert";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -38,16 +38,13 @@ const setStopAlarm = async () => {
       return false;
     }
   }
-
-  const { status: fgStatus } = await getForegroundPermissionsAsync();
-  if (fgStatus !== "granted") {
-    const { status } = await requestForegroundPermissionsAsync();
-    if ( status !== "granted" ) {
-      return false;
-    }
-  }
+  
   const { status: bgStatus } = await getBackgroundPermissionsAsync();
+  await AsyncAlert('Background location permission is required for setting up the arrival reminder')
   if (bgStatus !== "granted") {
+    if ( Platform.OS === 'android' ) {
+      alert('Background location permission is required for setting up the arrival reminder')
+    }
     const { status } = await requestBackgroundPermissionsAsync();
     if ( status !== "granted" ) {
       return false;

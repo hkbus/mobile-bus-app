@@ -224,6 +224,7 @@ export default function App() {
     () => `
     window.RnOs = "${Platform.OS}";
     window.iOSRNWebView = ${Platform.OS === "ios"};
+    window.stopAlarm = true;
     ${
       Platform.OS === "ios"
         ? `window.iOSTracking = ${
@@ -257,7 +258,7 @@ export default function App() {
     );
   }
 
-  const uri = url || "https://hkbus.app/";
+  const uri = url?.startsWith("https://hkbus.app") ? url : "https://hkbus.app/";
 
   return (
     <>
