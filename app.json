@@ -2,7 +2,7 @@
   "expo": {
     "name": "巴士到站預報 - hkbus.app",
     "slug": "hkbus",
-    "version": "2.7.0",
+    "version": "2.7.4",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -31,7 +31,16 @@
         "expo-location",
         {
           "locationAlwaysAndWhenInUsePermission": "Geolocation permission will be used to alert your arrival for the stop",
+          "locationWhenInUsePermission": "Your location will be used to determine the nearby bus stops",
+          "locationAlwaysPermission": "Geolocation permission will be used to alert your arrival for the stop",
           "isAndroidBackgroundLocationEnabled": true
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/logo96.png",
+          "iosDisplayInForegroud": true
         }
       ]
     ],
@@ -40,6 +49,7 @@
       "bundleIdentifier": "app.hkbus",
       "infoPlist": {
         "NSLocationAlwaysAndWhenInUseUsageDescription": "Your location will be used to determine the nearby bus stops",
+        "NSLocationWhenInUseUsageDescription": "Your location will be used to determine the nearby bus stops",
         "NSUserTrackingUsageDescription": "This identifier will be used to count the number of active users.",
         "UIBackgroundModes": ["location", "remote-notification"]
       },

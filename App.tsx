@@ -36,8 +36,11 @@ import {
   requestTrackingPermissionsAsync,
 } from "expo-tracking-transparency";
 import { postAlarmToWebView, toggleAlarm } from "./stopAlarm";
+import * as ExpoLinking from "expo-linking";
 
 export default function App() {
+  const url = ExpoLinking.useURL();
+
   const [locationPermission] = useForegroundPermissions({
     get: true,
     request: true,
@@ -254,7 +257,7 @@ export default function App() {
     );
   }
 
-  const uri = "https://hkbus.app/";
+  const uri = url || "https://hkbus.app/";
 
   return (
     <>
