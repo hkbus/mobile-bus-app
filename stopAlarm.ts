@@ -31,19 +31,17 @@ const targetLocation = {
 };
 
 const setStopAlarm = async () => {
-  const { status: existingStatus } = await Notifications.getPermissionsAsync();
-  if (existingStatus !== "undetermined") {
-    const { status } = await Notifications.requestPermissionsAsync();
-    if ( status !== "granted" ) {
-      return false;
-    }
+  const { status: notificationStatus } = await Notifications.requestPermissionsAsync();
+  if ( notificationStatus !== "granted" ) {
+    await AsyncAlert("Fail to setup alarm without notification permission.");
+    return false;
   }
   
   const { status: bgStatus } = await getBackgroundPermissionsAsync();
-  await AsyncAlert('Background location permission is required for setting up the arrival reminder')
+  
   if (bgStatus !== "granted") {
     if ( Platform.OS === 'android' ) {
-      alert('Background location permission is required for setting up the arrival reminder')
+      await AsyncAlert('Background location permission is required for setting up the arrival reminder')
     }
     const { status } = await requestBackgroundPermissionsAsync();
     if ( status !== "granted" ) {

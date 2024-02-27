@@ -2,7 +2,7 @@
   "expo": {
     "name": "巴士到站預報 - hkbus.app",
     "slug": "hkbus",
-    "version": "2.7.5",
+    "version": "2.7.8",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -15,7 +15,8 @@
       "url": "https://u.expo.dev/d05aadae-7952-423d-bc30-31504dfbf8d2",
       "requestHeaders": {
         "expo-channel-name": "production"
-      }
+      },
+      "enabled": false
     },
     "assetBundlePatterns": [
       "**/*"
@@ -54,7 +55,8 @@
         "UIBackgroundModes": ["location", "remote-notification"]
       },
       "appStoreUrl": "https://apps.apple.com/hk/app/%E5%B7%B4%E5%A3%AB%E5%88%B0%E7%AB%99%E9%A0%90%E5%A0%B1-hkbus-app/id1612184906",
-      "buildNumber": "7.0"
+      "associatedDomains": ["applinks:hkbus.app"],
+      "buildNumber": "7.1"
     },
     "android": {
       "adaptiveIcon": {
@@ -79,8 +81,7 @@
             "DEFAULT"
           ]
         }
-      ],
-      "useNextNotificationsApi": true
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
