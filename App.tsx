@@ -37,6 +37,7 @@ import {
 } from "expo-tracking-transparency";
 import { postAlarmToWebView, toggleAlarm } from "./stopAlarm";
 import * as ExpoLinking from "expo-linking";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function App() {
   const url = ExpoLinking.useURL();
@@ -175,6 +176,31 @@ export default function App() {
           .then(() => 
             postAlarmToWebView(webViewRef)
           );
+      } else if (message.type === "setItem") {
+        if ( message?.value?.value === null || message?.value?.value === undefined ) {
+          AsyncStorage.removeItem(message?.value)
+        } else {
+          AsyncStorage.setItem(message?.value?.key, message?.value?.value)
+        }
+      } else if (message.type === "removeItem") {
+        AsyncStorage.removeItem(message?.value)
+      } else if (message.type === "clear") {
+        AsyncStorage.clear()
+      } else if (message.type === 'multiGet') {
+        AsyncStorage.getAllKeys()
+          .then(keys => AsyncStorage.multiGet(keys))
+          .then(kvs => {
+            webViewRef?.current?.postMessage(
+              JSON.stringify({
+                type: "initStorage",
+                kvs: kvs.reduce((acc, [k, v]) => {
+                  if ( k === null || v === null ) return acc;
+                  acc[k] = v;
+                  return acc
+                }, {} as Record<string, string>)
+              })
+            );
+          })
       }
     } catch (err) {
       console.log("UNKNOWN message:", e);
