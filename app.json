@@ -2,7 +2,7 @@
   "expo": {
     "name": "巴士到站預報 - hkbus.app",
     "slug": "hkbus",
-    "version": "2.8.0",
+    "version": "2.8.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -43,6 +43,14 @@
           "icon": "./assets/logo96.png",
           "iosDisplayInForegroud": true
         }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "targetSdkVersion": 34
+          }
+        }
       ]
     ],
     "ios": {
@@ -52,10 +60,15 @@
         "NSLocationAlwaysAndWhenInUseUsageDescription": "Your location will be used to determine the nearby bus stops",
         "NSLocationWhenInUseUsageDescription": "Your location will be used to determine the nearby bus stops",
         "NSUserTrackingUsageDescription": "This identifier will be used to count the number of active users.",
-        "UIBackgroundModes": ["location", "remote-notification"]
+        "UIBackgroundModes": [
+          "location",
+          "remote-notification"
+        ]
       },
       "appStoreUrl": "https://apps.apple.com/hk/app/%E5%B7%B4%E5%A3%AB%E5%88%B0%E7%AB%99%E9%A0%90%E5%A0%B1-hkbus-app/id1612184906",
-      "associatedDomains": ["applinks:hkbus.app"],
+      "associatedDomains": [
+        "applinks:hkbus.app"
+      ],
       "buildNumber": "8"
     },
     "android": {
@@ -64,7 +77,7 @@
         "backgroundColor": "#000000"
       },
       "package": "app.hkbus",
-      "versionCode": 18,
+      "versionCode": 20,
       "intentFilters": [
         {
           "action": "VIEW",
