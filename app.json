@@ -48,7 +48,8 @@
         "expo-build-properties",
         {
           "android": {
-            "targetSdkVersion": 34
+            "targetSdkVersion": 34,
+            "minSdkVersion": 29
           }
         }
       ]
@@ -77,7 +78,7 @@
         "backgroundColor": "#000000"
       },
       "package": "app.hkbus",
-      "versionCode": 20,
+      "versionCode": 21,
       "intentFilters": [
         {
           "action": "VIEW",
