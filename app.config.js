@@ -4,7 +4,7 @@ module.exports = ({ config }) => {
   return {
     ...config,
     name: '巴士到站預報 - hkbus.app',
-    slug: 'hkbusedemo-dev', // Replace with your app's slug
+    slug: 'hkbus', // Replace with your app's slug
     version: '2.8.1', // Your app's version
     orientation: 'portrait',
     icon: './assets/icon.png',
@@ -104,7 +104,7 @@ module.exports = ({ config }) => {
     },
     extra: {
       eas: {
-        projectId: 'd138ee5b-fb89-4552-ab28-d574884df2c6'
+        projectId: 'd05aadae-7952-423d-bc30-31504dfbf8d2'
       }
     },
     runtimeVersion: {
@@ -113,6 +113,7 @@ module.exports = ({ config }) => {
     locales: {
       en: './locales/en.json',
       'zh-Hant': './locales/zh-Hant.json'
-    }
+    },
+    owner: "hkbus-app"
   };
 };
