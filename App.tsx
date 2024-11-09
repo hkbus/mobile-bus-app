@@ -309,6 +309,7 @@ export default function App() {
             }}
             onContentProcessDidTerminate={handleContentTerminate}
             bounces={false}
+            overScrollMode="content"
             onNavigationStateChange={handleWebViewNavigationStateChange}
             renderLoading={() => <View style={styles.loadingView} />}
             startInLoadingState={true}
