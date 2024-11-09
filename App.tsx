@@ -328,10 +328,6 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
-  ScrollStyle: {
-    backgroundColor: "white",
-    position: "relative",
-  },
   loadingView: {
     backgroundColor: "black",
     width: "100%",
