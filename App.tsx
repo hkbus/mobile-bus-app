@@ -18,7 +18,7 @@ import {
   Share,
   ToastAndroid,
 } from "react-native";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
 import {
   Accuracy,
   PermissionStatus as LocationPermissionStatus,
@@ -282,32 +282,30 @@ export default function App() {
   return (
     <>
       <StatusBar style="light" />
-      <SafeAreaProvider>
-        <SafeAreaView style={styles.container}>
-          <WebView
-            ref={webViewRef}
-            style={styles.webview}
-            source={{ uri }}
-            cacheEnabled
-            cacheMode="LOAD_CACHE_ELSE_NETWORK"
-            pullToRefreshEnabled
-            onMessage={handleOnMessage}
-            injectedJavaScriptBeforeContentLoaded={runFirst}
-            onShouldStartLoadWithRequest={(request) => {
-              if (!request.url.startsWith(uri)) {
-                Linking.openURL(request.url);
-                return false;
-              }
-              return true;
-            }}
-            onContentProcessDidTerminate={handleContentTerminate}
-            bounces={false}
-            onNavigationStateChange={handleWebViewNavigationStateChange}
-            onLoadEnd={() => SplashScreen.hideAsync()}
-            startInLoadingState
-          />
-        </SafeAreaView>
-      </SafeAreaProvider>
+      <SafeAreaView style={styles.container}>
+        <WebView
+          ref={webViewRef}
+          style={styles.webview}
+          source={{ uri }}
+          cacheEnabled
+          cacheMode="LOAD_CACHE_ELSE_NETWORK"
+          pullToRefreshEnabled
+          onMessage={handleOnMessage}
+          injectedJavaScriptBeforeContentLoaded={runFirst}
+          onShouldStartLoadWithRequest={(request) => {
+            if (!request.url.startsWith(uri)) {
+              Linking.openURL(request.url);
+              return false;
+            }
+            return true;
+          }}
+          onContentProcessDidTerminate={handleContentTerminate}
+          bounces={false}
+          onNavigationStateChange={handleWebViewNavigationStateChange}
+          renderLoading={() => <View style={styles.loadingView} />}
+          startInLoadingState={true}
+        />
+      </SafeAreaView>
     </>
   );
 }
@@ -322,10 +320,6 @@ const styles = StyleSheet.create({
   webview: {
     width: "100%",
     height: "100%",
-  },
-  ScrollStyle: {
-    backgroundColor: "white",
-    position: "relative",
   },
   loadingView: {
     backgroundColor: "black",
