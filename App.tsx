@@ -303,6 +303,7 @@ export default function App() {
             }}
             onContentProcessDidTerminate={handleContentTerminate}
             bounces={false}
+            overScrollMode="content"
             onNavigationStateChange={handleWebViewNavigationStateChange}
             onLoadEnd={() => SplashScreen.hideAsync()}
             startInLoadingState
