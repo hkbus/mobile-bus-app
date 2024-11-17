@@ -16,6 +16,7 @@
     "expo-linking": "~6.3.1",
     "expo-location": "~17.0.1",
     "expo-notifications": "~0.28.16",
+    "expo-splash-screen": "~0.27.7",
     "expo-status-bar": "~1.12.1",
     "expo-task-manager": "~11.8.2",
     "expo-tracking-transparency": "~4.0.2",

@@ -1,4 +1,5 @@
 import "react-native-url-polyfill/auto";
+import * as SplashScreen from "expo-splash-screen";
 import React, {
   useCallback,
   useEffect,
@@ -14,10 +15,8 @@ import {
   Linking,
   Platform,
   StyleSheet,
-  ImageBackground,
   Share,
   ToastAndroid,
-  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
@@ -38,6 +37,8 @@ import {
 import { postAlarmToWebView, toggleAlarm } from "./stopAlarm";
 import * as ExpoLinking from "expo-linking";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+SplashScreen.preventAutoHideAsync();
 
 export default function App() {
   const url = ExpoLinking.useURL();
@@ -273,15 +274,7 @@ export default function App() {
   }, []);
 
   if (!readyToLoad) {
-    return (
-      <ImageBackground
-        source={require("./assets/splash.png")}
-        style={{
-          width: "100%",
-          height: "100%",
-        }}
-      />
-    );
+    return <></>;
   }
 
   const uri = url?.startsWith("https://hkbus.app") ? url : "https://hkbus.app/";
