@@ -5,7 +5,7 @@ module.exports = ({ config }) => {
     ...config,
     name: '巴士到站預報 - hkbus.app',
     slug: 'hkbus', // Replace with your app's slug
-    version: '2.9.0', // Your app's version
+    version: '2.9.1', // Your app's version
     orientation: 'portrait',
     icon: './assets/icon.png',
     splash: {
@@ -49,7 +49,7 @@ module.exports = ({ config }) => {
         {
           android: {
             targetSdkVersion: 34,
-            minSdkVersion: 29
+            minSdkVersion: 24,
           }
         }
       ],
@@ -80,7 +80,7 @@ module.exports = ({ config }) => {
         backgroundColor: '#000000'
       },
       package: 'app.hkbus',
-      versionCode: 22,
+      versionCode: 23,
       intentFilters: [
         {
           action: 'VIEW',
@@ -97,7 +97,7 @@ module.exports = ({ config }) => {
             'DEFAULT'
           ]
         }
-      ]
+      ],
     },
     web: {
       favicon: './assets/favicon.png'
