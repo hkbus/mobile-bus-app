@@ -52,9 +52,12 @@ module.exports = ({ config }) => {
       [
         'expo-splash-screen',
         {
-          image: './assets/splash.png',
-          resizeMode: 'contain',
-          backgroundColor: '#000000'
+          image: './assets/icon.png',
+          backgroundColor: '#FDB813',
+          dark: {
+            image: './assets/icon_dark.png',
+            backgroundColor: '#000000',
+          },
         }
       ]
     ],
