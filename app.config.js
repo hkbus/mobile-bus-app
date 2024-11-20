@@ -54,6 +54,7 @@ module.exports = ({ config }) => {
         {
           image: './assets/icon.png',
           backgroundColor: '#FDB813',
+          imageWidth: 150,
           dark: {
             image: './assets/icon_dark.png',
             backgroundColor: '#000000',
