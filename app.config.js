@@ -8,11 +8,6 @@ module.exports = ({ config }) => {
     version: '2.9.1', // Your app's version
     orientation: 'portrait',
     icon: './assets/icon.png',
-    splash: {
-      image: './assets/splash.png',
-      resizeMode: "contain",
-      backgroundColor: "#000000"
-    },
     updates: {
       fallbackToCacheTimeout: 0,
       url: 'https://u.expo.dev/d05aadae-7952-423d-bc30-31504dfbf8d2',
@@ -53,7 +48,15 @@ module.exports = ({ config }) => {
           }
         }
       ],
-      withAndroidLocalizedName
+      withAndroidLocalizedName,
+      [
+        'expo-splash-screen',
+        {
+          image: './assets/splash.png',
+          resizeMode: 'contain',
+          backgroundColor: '#000000'
+        }
+      ]
     ],
     ios: {
       supportsTablet: true,
