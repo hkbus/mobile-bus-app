@@ -305,7 +305,7 @@ export default function App() {
             bounces={false}
             overScrollMode="content"
             onNavigationStateChange={handleWebViewNavigationStateChange}
-            onLoadEnd={() => SplashScreen.hideAsync()}
+            onLoadEnd={() => SplashScreen.hide()}
             startInLoadingState
           />
         </SafeAreaView>
