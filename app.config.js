@@ -5,7 +5,7 @@ module.exports = ({ config }) => {
     ...config,
     name: '巴士到站預報 - hkbus.app',
     slug: 'hkbus', // Replace with your app's slug
-    version: '2.9.1', // Your app's version
+    version: '2.9.2', // Your app's version
     orientation: 'portrait',
     icon: './assets/icon.png',
     updates: {
@@ -87,7 +87,7 @@ module.exports = ({ config }) => {
         backgroundColor: '#000000'
       },
       package: 'app.hkbus',
-      versionCode: 23,
+      versionCode: 24,
       intentFilters: [
         {
           action: 'VIEW',
