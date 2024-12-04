@@ -1,6 +1,7 @@
+import type { ConfigContext, ExpoConfig } from 'expo/config';
 import withAndroidLocalizedName from './vendors/expo-android-localized-app-name';
 
-module.exports = ({ config }) => {
+module.exports = ({ config }: ConfigContext): ExpoConfig => {
   return {
     ...config,
     name: '巴士到站預報 - hkbus.app',
@@ -48,6 +49,7 @@ module.exports = ({ config }) => {
           }
         }
       ],
+      //@ts-expect-error
       withAndroidLocalizedName,
       [
         'expo-splash-screen',
