@@ -1486,6 +1486,11 @@
   resolved "https://registry.yarnpkg.com/@react-native/normalize-colors/-/normalize-colors-0.76.2.tgz#015fa1d454ec605153c8af05666185026e682e66"
   integrity sha512-ICoOpaTLPsFQjNLSM00NgQr6wal300cZZonHVSDXKntX+BfkLeuCHRtr/Mn+klTtW+/1v2/2FRm9dXjvyGf9Dw==
 
+"@react-native/normalize-colors@0.76.3":
+  version "0.76.3"
+  resolved "https://registry.yarnpkg.com/@react-native/normalize-colors/-/normalize-colors-0.76.3.tgz#8d4de4a8671385c53b2d202ef0137632abcf747d"
+  integrity sha512-Yrpmrh4IDEupUUM/dqVxhAN8QW1VEUR3Qrk2lzJC1jB2s46hDe0hrMP2vs12YJqlzshteOthjwXQlY0TgIzgbg==
+
 "@react-native/normalize-colors@^0.74.1":
   version "0.74.87"
   resolved "https://registry.npmjs.org/@react-native/normalize-colors/-/normalize-colors-0.74.87.tgz"
@@ -2825,6 +2830,14 @@ expo-modules-core@2.0.4:
   dependencies:
     invariant "^2.2.4"
 
+expo-navigation-bar@~4.0.5:
+  version "4.0.5"
+  resolved "https://registry.yarnpkg.com/expo-navigation-bar/-/expo-navigation-bar-4.0.5.tgz#3e47daf6527f68ebe66381a130284f06a4864e18"
+  integrity sha512-kbqHlmhlu/fb3lYUzTPA0HiKyxuXQMiySyQiOqo7pUZtZcOe2Dr1jcM/c18T0b4cQL4iLJQwQCKbTA97ccBgpw==
+  dependencies:
+    "@react-native/normalize-colors" "0.76.3"
+    debug "^4.3.2"
+
 expo-notifications@~0.29.8:
   version "0.29.8"
   resolved "https://registry.yarnpkg.com/expo-notifications/-/expo-notifications-0.29.8.tgz#dcb2326782d07254ea9caca814444a879df7dff3"
@@ -2854,6 +2867,14 @@ expo-structured-headers@~4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/expo-structured-headers/-/expo-structured-headers-4.0.0.tgz#85537ae6daec61ebfb214ede4107c8841c6e16d0"
   integrity sha512-uPiwZjWq3AdFGgY52+I2nGPrNa6izxAglymPXHUZLekZW290GqIUOk7MBNDD4sg4JwUbSi3gdxEurpEvuq+FSg==
+
+expo-system-ui@~4.0.5:
+  version "4.0.5"
+  resolved "https://registry.yarnpkg.com/expo-system-ui/-/expo-system-ui-4.0.5.tgz#d43489113a766cacb763be72ed33475b642a9735"
+  integrity sha512-PQJIFMAMnt3LrWCCHqg82zW+hXytvtJdFiiIYE2UuP0kDvl346tazQupbtJsSxJp1OpxhuNVhpvKoWV72is3bg==
+  dependencies:
+    "@react-native/normalize-colors" "0.76.3"
+    debug "^4.3.2"
 
 expo-task-manager@~12.0.3:
   version "12.0.3"
