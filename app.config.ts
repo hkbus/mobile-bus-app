@@ -123,6 +123,7 @@ module.exports = ({ config }: ConfigContext): ExpoConfig => {
       en: './locales/en.json',
       'zh-Hant': './locales/zh-Hant.json'
     },
-    owner: "hkbus-app"
+    owner: "hkbus-app",
+    userInterfaceStyle: "automatic"
   };
 };

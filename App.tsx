@@ -1,4 +1,5 @@
 import "react-native-url-polyfill/auto";
+import * as NavigationBar from "expo-navigation-bar";
 import * as SplashScreen from "expo-splash-screen";
 import React, {
   useCallback,
@@ -18,6 +19,7 @@ import {
   Share,
   ToastAndroid,
   View,
+  useColorScheme,
 } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import {
@@ -42,6 +44,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
+  const systemColorScheme = useColorScheme();
+  const [webAppActualColorMode, setWebAppActualColorMode] = useState<
+    "light" | "dark"
+  >(systemColorScheme || "dark");
+
   const url = ExpoLinking.useURL();
 
   const [locationPermission] = useForegroundPermissions({
@@ -178,6 +185,8 @@ export default function App() {
           .then(() => 
             postAlarmToWebView(webViewRef)
           );
+      } else if (message.type === "color-mode") {
+        setWebAppActualColorMode(message.value);
       } else if (message.type === "setItem") {
         if ( message?.value?.value === null || message?.value?.value === undefined ) {
           AsyncStorage.removeItem(message?.value)
@@ -265,10 +274,54 @@ export default function App() {
          window.ReactNativeWebView.postMessage(JSON.stringify({type: 'share', value: param}));
       };
     };
+
+    window.systemColorSchemeCallbacks = [];
+    window.systemColorScheme = new Proxy(
+      { value: ${JSON.stringify(systemColorScheme)} },
+      {
+        set(target, property, value) {
+          const result = Reflect.set(target, property, value);
+          if (result) {
+            window.systemColorSchemeCallbacks.forEach((callback) =>
+              callback(value)
+            );
+          } else {
+            console.error(
+              "Failed to set window.systemColorScheme.",
+              property,
+              "to",
+              value
+            );
+          }
+          return result;
+        },
+      }
+    );
+
     true; // note: this is required, or you'll sometimes get silent failures
   `,
     [trackingPermission]
   );
+
+  useEffect(() => {
+    webViewRef.current?.injectJavaScript(
+      `if (window.systemColorScheme && typeof window.systemColorScheme === "object") {
+        window.systemColorScheme.value = ${JSON.stringify(systemColorScheme)};
+      }`
+    );
+  }, [systemColorScheme]);
+
+  useEffect(() => {
+    if (Platform.OS !== "android") {
+      return;
+    }
+    NavigationBar.setBackgroundColorAsync(
+      webAppActualColorMode === "light" ? "#FEDB00" : "black"
+    );
+    NavigationBar.setButtonStyleAsync(
+      webAppActualColorMode === "light" ? "dark" : "light"
+    );
+  }, [webAppActualColorMode]);
 
   const handleContentTerminate = useCallback(() => {
     webViewRef.current?.reload();
@@ -282,7 +335,12 @@ export default function App() {
 
   return (
     <>
-      <StatusBar style="light" />
+      <StatusBar
+        style={webAppActualColorMode === "light" ? "dark" : "light"}
+        backgroundColor={
+          webAppActualColorMode === "light" ? "#FEDB00" : "black"
+        }
+      />
       <SafeAreaProvider>
         <SafeAreaView style={styles.container}>
           <WebView
