@@ -336,7 +336,13 @@ export default function App() {
   return (
     <>
       <StatusBar
-        style={webAppActualColorMode === "light" ? "dark" : "light"}
+        style={
+          Platform.OS === "android"
+            ? webAppActualColorMode === "light"
+              ? "dark"
+              : "light"
+            : "light"
+        }
         backgroundColor={
           webAppActualColorMode === "light" ? "#FEDB00" : "black"
         }
