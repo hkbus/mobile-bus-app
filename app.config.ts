@@ -6,7 +6,7 @@ module.exports = ({ config }: ConfigContext): ExpoConfig => {
     ...config,
     name: '巴士到站預報 - hkbus.app',
     slug: 'hkbus', // Replace with your app's slug
-    version: '2.9.3', // Your app's version
+    version: '2.9.4', // Your app's version
     orientation: 'portrait',
     icon: './assets/icon.png',
     updates: {
