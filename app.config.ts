@@ -81,7 +81,7 @@ module.exports = ({ config }: ConfigContext): ExpoConfig => {
       associatedDomains: [
         'applinks:hkbus.app'
       ],
-      buildNumber: '12'
+      buildNumber: '13'
     },
     android: {
       adaptiveIcon: {
