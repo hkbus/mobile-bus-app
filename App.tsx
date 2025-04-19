@@ -43,7 +43,34 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 SplashScreen.preventAutoHideAsync();
 
+const useAppIsInForeground = () => {
+  const appState = useRef(AppState.currentState);
+  const [appIsInForeground, setAppIsInForeground] = useState(true);
+  useEffect(() => {
+    const handler = AppState.addEventListener('change', async nextAppState => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === 'active'
+      ) {
+        setAppIsInForeground(true);
+      }
+      if (
+        appState.current === 'active' &&
+        nextAppState.match(/inactive|background/)
+      ) {
+        setAppIsInForeground(false);
+      }
+      appState.current = nextAppState;
+    });
+
+    return () => handler.remove();
+  }, []);
+
+  return appIsInForeground;
+};
+
 export default function App() {
+  const appIsInForeground = useAppIsInForeground();
   const systemColorScheme = useColorScheme();
   const [webAppActualColorMode, setWebAppActualColorMode] = useState<
     "light" | "dark"
@@ -124,7 +151,8 @@ export default function App() {
     let positionSubscription = { remove: () => {} };
     if (
       locationPermission?.status === LocationPermissionStatus.GRANTED &&
-      geolocationStatus === "granted"
+      geolocationStatus === "granted" &&
+      appIsInForeground
     ) {
       watchHeadingAsync(({ accuracy, trueHeading }) => {
         webViewRef?.current?.postMessage(
@@ -148,7 +176,7 @@ export default function App() {
       headingSubscription.remove();
       positionSubscription.remove();
     };
-  }, [locationPermission?.status, geolocationStatus]);
+  }, [locationPermission?.status, geolocationStatus, appIsInForeground]);
 
   const handleOnMessage = useCallback((e: any) => {
     try {
