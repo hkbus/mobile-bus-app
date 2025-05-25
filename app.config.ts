@@ -124,6 +124,7 @@ module.exports = ({ config }: ConfigContext): ExpoConfig => {
       'zh-Hant': './locales/zh-Hant.json'
     },
     owner: "hkbus-app",
-    userInterfaceStyle: "automatic"
+    userInterfaceStyle: "automatic",
+    newArchEnabled: true
   };
 };
