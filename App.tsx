@@ -187,10 +187,12 @@ export default function App() {
       if (message.type === "start-geolocation") {
         if (locationPermission?.granted) {
           setGeolocationStatus("granted");
-        } else {
+        } else if (message.force || locationPermission?.canAskAgain) {
           requestForegroundPermissionsAsync().then(({ status }) => {
             setGeolocationStatus(status === "granted" ? "granted" : "closed");
           });
+        } else {
+          setGeolocationStatus("closed");
         }
       } else if (message.type === "stop-geolocation") {
         setGeolocationStatus("closed");
@@ -359,7 +361,7 @@ export default function App() {
     return <></>;
   }
 
-  const uri = url?.startsWith("https://hkbus.app") ? url : "https://hkbus.app/";
+  const uri = url?.startsWith("https:/hkbus.app") ? url : "https://hkbus.app/";
 
   return (
     <>
