@@ -361,7 +361,7 @@ export default function App() {
     return <></>;
   }
 
-  const uri = url?.startsWith("https:/hkbus.app") ? url : "https://hkbus.app/";
+  const uri = url?.startsWith("https://hkbus.app") ? url : "https://hkbus.app/";
 
   return (
     <>

@@ -89,7 +89,7 @@ module.exports = ({ config }: ConfigContext): ExpoConfig => {
         backgroundColor: '#000000'
       },
       package: 'app.hkbus',
-      versionCode: 29,
+      versionCode: 30,
       intentFilters: [
         {
           action: 'VIEW',
