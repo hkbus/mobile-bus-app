@@ -185,6 +185,7 @@ export default function App() {
       } = e;
       const message = JSON.parse(data) as any;
       if (message.type === "start-geolocation") {
+        console.log("start-geolocation: " + data + " " + JSON.stringify(locationPermission))
         if (locationPermission?.granted) {
           setGeolocationStatus("granted");
         } else if (message.force || locationPermission?.canAskAgain) {
@@ -246,7 +247,7 @@ export default function App() {
     } catch (err) {
       console.log("UNKNOWN message:", e);
     }
-  }, []);
+  }, [locationPermission]);
 
   const readyToLoad = useMemo<boolean>(() => {
     if (
@@ -256,6 +257,7 @@ export default function App() {
     ) {
       return false;
     }
+    setGeolocationStatus(locationPermission.granted ? "granted" : "closed")
     return true;
   }, [locationPermission, locationPermission?.status]);
 
@@ -278,14 +280,17 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    webViewRef?.current?.postMessage(
-      JSON.stringify({
-        type: "geoPermission",
-        value: geolocationStatus,
-      })
-    );
-    postAlarmToWebView(webViewRef);
-  }, [geolocationStatus]);
+    if ( readyToLoad ) {
+      webViewRef?.current?.postMessage(
+        JSON.stringify({
+          type: "geoPermission",
+          value: geolocationStatus,
+        })
+      );
+      console.log("post geoPermission: "+JSON.stringify(geolocationStatus))
+      postAlarmToWebView(webViewRef);
+    }
+  }, [readyToLoad, geolocationStatus]);
 
   const runFirst = useMemo(
     () => `
