@@ -24,6 +24,7 @@ import {
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import {
   Accuracy,
+  hasServicesEnabledAsync,
   PermissionStatus as LocationPermissionStatus,
   requestForegroundPermissionsAsync,
   useForegroundPermissions,
@@ -154,23 +155,26 @@ export default function App() {
       geolocationStatus === "granted" &&
       appIsInForeground
     ) {
-      watchHeadingAsync(({ accuracy, trueHeading }) => {
-        webViewRef?.current?.postMessage(
-          JSON.stringify({
-            accuracy,
-            degree: 360 - trueHeading,
-            type: "compass",
-          })
-        );
-      }).then((s) => (headingSubscription = s));
-      watchPositionAsync(
-        { accuracy: Accuracy.BestForNavigation },
-        ({ coords: { latitude, longitude } }) => {
+      hasServicesEnabledAsync().then(enabled => {
+        if (!enabled) return;
+        watchHeadingAsync(({ accuracy, trueHeading }) => {
           webViewRef?.current?.postMessage(
-            JSON.stringify({ lat: latitude, lng: longitude, type: "location" })
+            JSON.stringify({
+              accuracy,
+              degree: 360 - trueHeading,
+              type: "compass",
+            })
           );
-        }
-      ).then((s) => (positionSubscription = s));
+        }).then((s) => (headingSubscription = s));
+        watchPositionAsync(
+          { accuracy: Accuracy.BestForNavigation },
+          ({ coords: { latitude, longitude } }) => {
+            webViewRef?.current?.postMessage(
+              JSON.stringify({ lat: latitude, lng: longitude, type: "location" })
+            );
+          }
+        ).then((s) => (positionSubscription = s));
+      })
     }
     return () => {
       headingSubscription.remove();
@@ -185,7 +189,6 @@ export default function App() {
       } = e;
       const message = JSON.parse(data) as any;
       if (message.type === "start-geolocation") {
-        console.log("start-geolocation: " + data + " " + JSON.stringify(locationPermission))
         if (locationPermission?.granted) {
           setGeolocationStatus("granted");
         } else if (message.force || locationPermission?.canAskAgain) {
