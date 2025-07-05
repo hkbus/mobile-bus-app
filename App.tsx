@@ -193,7 +193,7 @@ export default function App() {
           setGeolocationStatus("granted");
         } else if (message.force || locationPermission?.canAskAgain) {
           requestForegroundPermissionsAsync().then(({ status }) => {
-            setGeolocationStatus(status === "granted" ? "granted" : "closed");
+            setGeolocationStatus(status === LocationPermissionStatus.GRANTED ? "granted" : "closed");
           });
         } else {
           setGeolocationStatus("closed");
@@ -291,7 +291,7 @@ export default function App() {
         })
       );
       console.log("post geoPermission: "+JSON.stringify(geolocationStatus))
-      postAlarmToWebView(webViewRef);
+      postAlarmToWebView(webViewRef)
     }
   }, [readyToLoad, geolocationStatus]);
 
@@ -370,6 +370,7 @@ export default function App() {
   }
 
   const uri = url?.startsWith("https://hkbus.app") ? url : "https://hkbus.app/";
+  // const uri = "http://localhost"
 
   return (
     <>
@@ -407,7 +408,17 @@ export default function App() {
             bounces={false}
             overScrollMode="content"
             onNavigationStateChange={handleWebViewNavigationStateChange}
-            onLoadEnd={() => SplashScreen.hide()}
+            onLoadEnd={() => {
+              SplashScreen.hide()
+              webViewRef?.current?.postMessage(
+                JSON.stringify({
+                  type: "geoPermission",
+                  value: geolocationStatus,
+                })
+              );
+              console.log("post geoPermission: "+JSON.stringify(geolocationStatus))
+              postAlarmToWebView(webViewRef)
+            }}
             startInLoadingState
           />
         </SafeAreaView>

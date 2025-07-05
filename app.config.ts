@@ -6,7 +6,7 @@ module.exports = ({ config }: ConfigContext): ExpoConfig => {
     ...config,
     name: '巴士到站預報 - hkbus.app',
     slug: 'hkbus', // Replace with your app's slug
-    version: '2.9.6', // Your app's version
+    version: '2.9.8', // Your app's version
     orientation: 'portrait',
     icon: './assets/icon.png',
     updates: {
@@ -81,7 +81,7 @@ module.exports = ({ config }: ConfigContext): ExpoConfig => {
       associatedDomains: [
         'applinks:hkbus.app'
       ],
-      buildNumber: '16'
+      buildNumber: '18'
     },
     android: {
       adaptiveIcon: {
