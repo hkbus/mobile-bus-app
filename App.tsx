@@ -224,6 +224,9 @@ function AppContent() {
   // the same root cause: env() is unreliable. react-native-safe-area-context
   // reports the true inset on every WebView version, so inject it as an
   // `!important` body padding-bottom that overrides whatever env() resolves to.
+  // The top inset is handled natively instead (a black spacer above the
+  // WebView, see render), so zero out the web app's env() top padding to avoid
+  // double-padding on WebViews where env() over-reports.
   // Android only: iOS WKWebView reports env(safe-area-inset-*) correctly.
   const applyAndroidSafeAreaInsets = useCallback(() => {
     if (Platform.OS !== "android") return;
@@ -236,7 +239,7 @@ function AppContent() {
           el.id = id;
           document.head.appendChild(el);
         }
-        el.textContent = "body{padding-bottom:${insets.bottom}px !important;}";
+        el.textContent = "body{padding-top:0 !important;padding-bottom:${insets.bottom}px !important;}";
       })();
       true;
     `);
@@ -290,6 +293,23 @@ function AppContent() {
     webViewUrl.current = newNavState.url;
   }, []);
 
+  const postCurrentPosition = useCallback(async () => {
+    try {
+      if (!(await hasServicesEnabledAsync())) return;
+      const {
+        coords: { latitude, longitude },
+      } = await getCurrentPositionAsync({
+        accuracy: Accuracy.BestForNavigation,
+      });
+      webViewRef.current?.postMessage(
+        JSON.stringify({ lat: latitude, lng: longitude, type: "location" })
+      );
+      console.log("post location: " + JSON.stringify({ latitude, longitude }));
+    } catch (e) {
+      console.log("cannot get current position", e);
+    }
+  }, []);
+
   useEffect(() => {
     let headingSubscription = { remove: () => {} };
     let positionSubscription = { remove: () => {} };
@@ -300,12 +320,7 @@ function AppContent() {
     ) {
       hasServicesEnabledAsync().then(enabled => {
         if (!enabled) return;
-        getCurrentPositionAsync({ accuracy: Accuracy.BestForNavigation })
-          .then(({ coords: { latitude, longitude } }) => {
-            webViewRef?.current?.postMessage(
-              JSON.stringify({ lat: latitude, lng: longitude, type: "location" })
-            );
-          });
+        postCurrentPosition();
         watchHeadingAsync(({ accuracy, trueHeading }) => {
           webViewRef?.current?.postMessage(
             JSON.stringify({
@@ -329,7 +344,12 @@ function AppContent() {
       headingSubscription.remove();
       positionSubscription.remove();
     };
-  }, [locationPermission?.status, geolocationStatus, appIsInForeground]);
+  }, [
+    locationPermission?.status,
+    geolocationStatus,
+    appIsInForeground,
+    postCurrentPosition,
+  ]);
 
   const handleOnMessage = useCallback((e: any) => {
     try {
@@ -339,7 +359,11 @@ function AppContent() {
       const message = JSON.parse(data) as any;
       if (message.type === "start-geolocation") {
         if (locationPermission?.granted) {
+          // setGeolocationStatus is a no-op when the status is unchanged, so the
+          // watcher effect does not re-run and the reloaded WebView would sit on
+          // its stale seed until the user physically moves. WebView reload.
           setGeolocationStatus("granted");
+          postCurrentPosition();
         } else if (message.force) {
           // Explicit user action (e.g. tapping "use my location"): re-run the
           // full flow, clearing any prior decline. geolocationStatus updates via
@@ -403,7 +427,7 @@ function AppContent() {
     } catch (err) {
       console.log("UNKNOWN message:", e);
     }
-  }, [locationPermission, requestLocationWithConsent]);
+  }, [locationPermission, requestLocationWithConsent, postCurrentPosition]);
 
   // Once the permission flow resolves to a definite status, reflect it in
   // geolocationStatus. This no longer gates rendering — the WebView mounts
@@ -549,15 +573,8 @@ function AppContent() {
 
   return (
     <>
-      <StatusBar
-        style={
-          Platform.OS === "android"
-            ? webAppActualColorMode === "light"
-              ? "dark"
-              : "light"
-            : "light"
-        }
-      />
+      {/* White status bar icons on every platform and theme. */}
+      <StatusBar style="light" />
       <View
         style={[
           styles.container,
@@ -567,6 +584,16 @@ function AppContent() {
           },
         ]}
       >
+          {/*
+            Android: under enforced edge-to-edge the status bar is transparent,
+            so it would show whatever the web page draws underneath (yellow
+            header in light mode -> white icons on yellow). Reserve the top
+            inset with a solid black strip so the status bar is always
+            white-on-black regardless of theme.
+          */}
+          {Platform.OS === "android" && (
+            <View style={{ height: insets.top, backgroundColor: "#000" }} />
+          )}
           <WebView
             ref={webViewRef}
             style={styles.webview}
