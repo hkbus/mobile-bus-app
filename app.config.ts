@@ -6,7 +6,7 @@ module.exports = ({ config }: ConfigContext): ExpoConfig => {
     ...config,
     name: '巴士到站預報 - hkbus.app',
     slug: 'hkbus', // Replace with your app's slug
-    version: '2.10.7', // Your app's version
+    version: '2.10.8', // Your app's version
     orientation: 'portrait',
     icon: './assets/icon.png',
     updates: {
@@ -63,6 +63,15 @@ module.exports = ({ config }: ConfigContext): ExpoConfig => {
             backgroundColor: '#000000',
           },
         }
+      ],
+      [
+        'expo-build-properties',
+        {
+          'android': {
+            'enableMinifyInReleaseBuilds': true,
+            'enableShrinkResourcesInReleaseBuilds': true
+          }
+        }
       ]
     ],
     ios: {
@@ -96,7 +105,7 @@ module.exports = ({ config }: ConfigContext): ExpoConfig => {
         backgroundColor: '#000000'
       },
       package: 'app.hkbus',
-      versionCode: 55,
+      versionCode: 56,
       intentFilters: [
         {
           action: 'VIEW',
